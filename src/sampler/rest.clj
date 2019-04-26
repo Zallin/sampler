@@ -75,7 +75,8 @@
         (hash-map :sample-id))})
 
 (def routes
-  {"Sample"
+  {:interceptors [#'mw/basic-auth]
+   "Sample"
    {"$fetch"
     {:interceptors [#'mw/params! #'mw/connection! #'mw/resource!]
      :GET #'fetch-sample}

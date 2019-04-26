@@ -22,3 +22,12 @@
         :returning [:*]}
        db/fmt
        (db/q db)))
+
+(defn insert-client! [db v]
+  (->> {:insert-into (db/*table-name "client")
+        :values [(merge {:id (uuid)} v)]
+        :upsert {:on-conflict [:key]
+                 :do-nothing {}}
+        :returning [:*]}
+       db/fmt
+       (db/q db)))

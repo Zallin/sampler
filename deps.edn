@@ -9,6 +9,7 @@
   ring/ring-devel {:mvn/version "1.7.1"}
   ring/ring-jetty-adapter {:mvn/version "1.7.1"}
   route-map {:mvn/version "0.0.7-RC3"}
+  crypto-password {:mvn/version "0.2.1"}
   matcho {:git/url "https://github.com/HealthSamurai/matcho.git"
           :sha "5e44139038b53b6d05a186d8cd05819a96b0aab5"}}
 

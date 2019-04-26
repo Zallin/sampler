@@ -1,5 +1,6 @@
 (ns sampler.test-db
   (:require
+   [crypto.password.scrypt :as scrypt]
    [cheshire.core :as json]
    [sampler.migration :as migration]
    [sampler.db :as db]
@@ -40,10 +41,15 @@
               :pgport "6004"
               :pguser "postgres"
               :db "postgres"}
-        test-db (db/connect (assoc conn :pw (:test-db cfg/cfg)))]
+        test-db (db/connect (assoc conn :pw (:test-db cfg/cfg)))
+        client {:key "test-client"
+                :secret (scrypt/encrypt "1234")}]
     (migration/migrate! sampler-db)
     (queries/insert-connection! sampler-db conn)
     (db/truncate sampler-db :sample)
+    (db/truncate sampler-db :client)
+    (queries/insert-client! sampler-db client)
+
     (db/exec test-db (slurp "test/sampler/test_migration.sql"))
     (prepare-data! test-db)))
 

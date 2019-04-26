@@ -14,4 +14,10 @@ create table if not exists connection (
  pguser text not null,
  db text not null,
  opts jsonb
+);
+
+create table if not exists client (
+ id text primary key,
+ key text unique not null,
+ secret text not null
 )

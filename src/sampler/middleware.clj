@@ -1,11 +1,13 @@
 (ns sampler.middleware
   (:require
+   [clojure.data.codec.base64 :as b64]
+   [crypto.password.scrypt :as scrypt]
+   [clojure.string :as str]
    [sampler.config :as cfg]
    [sampler.db :as db]
    [ring.util.codec :as codec]
    [clojure.walk :as walk]
    [matcho.core :as matcho]
-   [cheshire.core :as json]
    [sampler.spec :as spec]))
 
 (defn resource! [handler]
@@ -72,3 +74,22 @@
                 walk/keywordize-keys)]
         (handler (update req :params merge params)))
       (handler req))))
+
+(defn decode [s]
+  (String. (b64/decode (.getBytes s))))
+
+(def denied {:status 403 :body {:message "Access denied"}})
+
+(defn basic-auth [handler]
+  (fn [{db :db hs :headers :as req}]
+    (if-let [encoded (and (get hs "authorization")
+                          (->> (get hs "authorization") (re-find #"^Basic (.*)$") last))]
+      (let [[key secret] (str/split (decode encoded) #":" 2)]
+        (if (and key secret)
+          (if-let [client (first (db/q db {:select [:*] :from [:client] :where [:= :key key]}))]
+            (if (scrypt/check secret (:secret client))
+              (handler req)
+              denied)
+            denied)
+          denied))
+      denied)))

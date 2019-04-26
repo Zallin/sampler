@@ -44,4 +44,33 @@
                 :id "untest-pt"
                 :from "test-db"})))
 
-  
+(defn basic-req [header]
+  (utils/http :get "/Sample/$fetch"
+              {:resourceType "Patient"
+               :id "untest-pt"
+               :from "test-db"}
+              {:Authorization header}))
+
+(deftest basic-auth-mw
+  (tdb/prepare!)
+
+  (matcho/assert
+   {:status 403
+    :body {:message #"Access denied"}}
+   (basic-req "huyasic"))
+
+  (matcho/assert
+   {:status 403}
+   (basic-req "Basic 123"))
+
+  (matcho/assert
+   {:status 403}
+   (basic-req (str "Basic " (utils/encode "notfound:123"))))
+
+  (matcho/assert
+   {:status 403}
+   (basic-req (str "Basic " (utils/encode "test-client:123"))))
+
+  (matcho/assert
+   {:status 404}
+   (basic-req (str "Basic " (utils/encode "test-client:1234")))))
