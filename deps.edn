@@ -1,0 +1,27 @@
+{:paths ["src"]
+
+ :deps
+ {org.clojure/clojure {:mvn/version "1.10.0"}
+  clj-pg {:mvn/version "0.0.3"}
+  honeysql {:mvn/version "0.9.4"}
+  cheshire {:mvn/version "5.8.1"}
+  ring/ring-core {:mvn/version "1.7.1"}
+  ring/ring-devel {:mvn/version "1.7.1"}
+  ring/ring-jetty-adapter {:mvn/version "1.7.1"}
+  route-map {:mvn/version "0.0.7-RC3"}
+  matcho {:git/url "https://github.com/HealthSamurai/matcho.git"
+          :sha "5e44139038b53b6d05a186d8cd05819a96b0aab5"}}
+
+ :aliases
+ {:dev
+  {:extra-paths ["test"]
+
+   :extra-deps
+   {:tools
+    {:git/url "https://github.com/Zallin/tools"
+     :sha "14e3c0591b8d48ab0f8fa182f561d6ec7f10f721"}
+
+    matcho
+    {:git/url "https://github.com/HealthSamurai/matcho.git"
+     :sha "5e44139038b53b6d05a186d8cd05819a96b0aab5"}}}}}
+

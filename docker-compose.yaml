@@ -1,0 +1,22 @@
+version: '3'
+services:
+  sampler-db:
+    image: postgres:11.2
+    container_name: sampler-db
+    restart: always
+    volumes:
+      - .db-data:/var/lib/postgresql/data
+    ports:
+      - 6003:5432
+    environment:
+      POSTGRES_PASSWORD: bums
+  sampler-test-db:
+    image: postgres:11.2
+    restart: always
+    container_name: sampler-test-db
+    volumes:
+      - .test-db-data:/var/lib/postgresql/data
+    ports:
+      - 6004:5432
+    environment:
+      POSTGRES_PASSWORD: bams
