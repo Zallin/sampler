@@ -74,8 +74,29 @@
         :id
         (hash-map :sample-id))})
 
+(defn create-connection
+  [{db :db spec :spec conn :params}]
+  {:status 201
+   :body
+   (->> (select-keys conn (keys spec))
+        (queries/insert-connection! db)
+        first)})
+
+(defn get-connection [{db :db {id :id} :params}]
+  {:status 200
+   :body (db/qf db
+                {:select [:*]
+                 :from [:connection]
+                 :where [:= :id id]})})
+
 (def routes
   {:interceptors [#'mw/basic-auth]
+
+   "Connection"
+   {:interceptors [#'mw/params!]
+    :POST #'create-connection
+    [:id] {:GET #'get-connection}}
+
    "Sample"
    {"$fetch"
     {:interceptors [#'mw/params! #'mw/connection! #'mw/resource!]

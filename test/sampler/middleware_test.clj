@@ -21,7 +21,13 @@
    {:status 400 :body {:message "Invalid input"}}
    (utils/http :post "/Sample/$query"
                {:resourceType "Patient"
-                :from "test-db"})))
+                :from "test-db"}))
+
+  (matcho/assert
+   {:status 400 :body {:message "Invalid input"}}
+   (utils/http :post "/Connection"
+               {:pghost "localhost"
+                :pgport "6001"})))
 
 (deftest connection-mw
   (tdb/prepare!)

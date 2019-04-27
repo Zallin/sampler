@@ -38,13 +38,17 @@
 
 (defn params! [handler]
   (fn [req]
+    (prn (->> spec/params
+          (filter (fn [[k v]] (re-find k (:uri req))))
+          (map (fn [[k v]] v))
+          first))
     (if-let [query-spec
-          (->> spec/params
-               (filter (fn [[k v]] (re-find k (:uri req))))
-               (map (fn [[k v]] v))
-               first)]
+             (->> spec/params
+                  (filter (fn [[k v]] (re-find k (:uri req))))
+                  (map (fn [[k v]] v))
+                  first)]
       (if (matcho/valid? query-spec (:params req))
-        (handler req)
+        (handler (assoc req :spec query-spec))
         {:status 400
          :body {:message "Invalid input"
                 :spec (pr-str query-spec)}})

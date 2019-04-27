@@ -72,3 +72,26 @@
     ^:matcho/strict
     [{:resourceType "Patient" :id "test-pt"}]}
    (utils/http :get (str "/Sample/" (get-in resp [:body :sample-id])))))
+
+(deftest post-connection
+  (tdb/prepare!)
+
+  (def conn
+    {:name "new-db"
+     :pghost "localhost"
+     :pgport "6005"
+     :pguser "postgres"
+     :db "my-db"
+     :opts {:sslmode "disable"}})
+
+  (def resp (utils/http :post "/Connection" conn))
+
+  (matcho/assert
+   {:status 201
+    :body {:id not-empty}}
+   resp)
+
+  (matcho/assert
+   {:status 200
+    :body conn}
+   (utils/http :get (str "/Connection/" (get-in resp [:body :id])))))

@@ -62,13 +62,13 @@
 (defonce ds (atom {}))
 
 (defn connect [cfg]
-  (let [{h :pghost p :pgport d :db u :pguser pw :pw :as cfg} cfg
+  (let [{h :pghost p :pgport d :db u :pguser pw :pw opts :opts :as cfg} cfg
         ds-id (str h ":" p)]
     (if-let [d (get @ds ds-id)]
       d
       (let [uri
             (clojure.core/format "jdbc:postgresql://%s:%s/%s?user=%s&password=%s&stringtype=unspecified&sslmode=%s"
-                                 h p d u pw (get cfg :sslmode "disable"))
+                                 h p d u pw (get opts :sslmode "disable"))
             pool-cfg
             {:idle-timeout       1000
              :minimum-idle       0

@@ -12,4 +12,11 @@
    #"/Sample/?$"
    {:resourceType string?
     :id string?
-    :from string?}})
+    :from string?}
+   #"/Connection$"
+   {:name string?
+    :pghost string?
+    :pgport string?
+    :pguser string?
+    :db string?
+    :opts #(if % (map? %) true)}})

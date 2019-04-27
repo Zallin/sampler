@@ -16,7 +16,9 @@
 
 (defn insert-connection! [db v]
   (->> {:insert-into (db/*table-name "connection")
-        :values [(merge {:id (uuid)} v)]
+        :values [(-> v
+                     (update :opts (fn [v] (json/generate-string (or v {}))))
+                     (merge {:id (uuid)}))]
         :upsert {:on-conflict [:name]
                  :do-nothing {}}
         :returning [:*]}
