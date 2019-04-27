@@ -7,7 +7,8 @@
    [sampler.queries :as queries]
    [sampler.spec :as spec]
    [sampler.config :as cfg]
-   [sampler.test-values :as values]))
+   [sampler.test-values :as values]
+   [clojure.java.io :as io]))
 
 (defn ->table-row [resource]
   {:id (get resource :id)
@@ -50,6 +51,6 @@
     (db/truncate sampler-db :client)
     (queries/insert-client! sampler-db client)
 
-    (db/exec test-db (slurp "test/sampler/test_migration.sql"))
+    (db/exec test-db (slurp (io/resource "sampler/test_migration.sql")))
     (prepare-data! test-db)))
 

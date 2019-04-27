@@ -1,6 +1,10 @@
 (ns sampler.migration
   (:require
-   [sampler.db :as db]))
+   [sampler.db :as db]
+   [clojure.java.io :as io]))
 
 (defn migrate! [db]
-  (db/exec db (slurp "src/sampler/migrations/init.sql")))
+  (->> "sampler/migrations/init.sql"
+       io/resource
+       slurp
+       (db/exec db)))

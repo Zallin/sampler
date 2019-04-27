@@ -114,11 +114,16 @@
   (.stop srv)
   (start!))
 
+(defn -main [& args]
+  (start!))
+
 (comment
 
   (def server (start!))
 
   (def server (restart! server))
+
+  (.stop server)
   
   )
 

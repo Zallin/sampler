@@ -14,3 +14,6 @@ repl:
 
 test:
 	clj -A:dev -m "tools.test"
+
+clj:
+	clj -m "tools.build" "target/app.jar"
