@@ -45,6 +45,7 @@
         test-db (db/connect (assoc conn :pw (:test-db cfg/cfg)))
         client {:key "test-client"
                 :secret (scrypt/encrypt "1234")}]
+    (db/truncate sampler-db :connection)
     (migration/migrate! sampler-db)
     (queries/insert-connection! sampler-db conn)
     (db/truncate sampler-db :sample)
