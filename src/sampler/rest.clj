@@ -1,5 +1,6 @@
 (ns sampler.rest
   (:require 
+   [org.httpkit.server :as http-kit]
    [sampler.config :as cfg]
    [sampler.middleware :as mw]
    [sampler.queries :as queries]
@@ -8,8 +9,6 @@
    [sampler.spec :as spec]
    [sampler.migration :as migration]
    [route-map.core :as route-map]
-   [ring.adapter.jetty :as jetty]
-   [ring.middleware.stacktrace :as trace]
    [clojure.string :as str]))
 
 (defn fetch-sample
@@ -58,7 +57,8 @@
 (defn query-sample
   [{db :db
     inp :input-db
-    {q :query} :params}]
+    {q :query} :params
+    :as req}]
   {:status 201
    :body 
    (->> (db/q inp q)
@@ -126,13 +126,12 @@
         stack (->> stack
                    (mw/add-db db)
                    mw/format-edn
-                   mw/parse-params
-                   trace/wrap-stacktrace)]
+                   mw/parse-params)]
     (migration/migrate! db)
-    (jetty/run-jetty stack {:port 8088 :join? false})))
+    (http-kit/run-server stack {:port 8088 :join? false})))
 
 (defn restart! [srv]
-  (.stop srv)
+  (srv)
   (start!))
 
 (defn -main [& args]
@@ -143,7 +142,7 @@
   (def server (start!))
 
   (def server (restart! server))
-
+  
   (.stop server)
   
   )

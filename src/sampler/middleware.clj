@@ -47,6 +47,7 @@
         (handler (assoc req :spec query-spec))
         {:status 400
          :body {:message "Invalid input"
+                :explain (matcho/match* (:params req) query-spec)
                 :spec (pr-str query-spec)}})
       (handler req))))
 
@@ -56,8 +57,9 @@
 
 (defn format-edn [handler]
   (fn [req]
-    (let [body* (when-let [b* (not-empty (slurp (:body req)))]
-                  (read-string b*))
+    (let [body-str (slurp (:body req))
+          body* (when-not (str/blank? body-str)
+                  (read-string body-str))
           req* (-> req
                    (update :params merge body*)
                    (assoc :body body*))

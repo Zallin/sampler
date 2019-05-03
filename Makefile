@@ -5,6 +5,7 @@ PW = bums
 DB = postgres
 
 TEST_DB = bams
+PROD_DB = postgres
 
 .EXPORT_ALL_VARIABLES:
 .PHONY: test
@@ -17,3 +18,6 @@ test:
 
 clj:
 	clj -m "tools.build" "target/app.jar"
+
+start:
+	clj -A:dev -m sampler.rest	

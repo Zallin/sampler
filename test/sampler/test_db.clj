@@ -46,7 +46,6 @@
         client {:key "test-client"
                 :secret (scrypt/encrypt "1234")}]
     (migration/migrate! sampler-db)
-    (db/truncate sampler-db :connection)
     (queries/insert-connection! sampler-db conn)
     (db/truncate sampler-db :sample)
     (db/truncate sampler-db :client)
