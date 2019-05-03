@@ -57,9 +57,8 @@
 
 (defn format-edn [handler]
   (fn [req]
-    (let [body-str (slurp (:body req))
-          body* (when-not (str/blank? body-str)
-                  (read-string body-str))
+    (let [body* (when-let [b* (and (:body req) (not-empty (slurp (:body req))))]
+                  (read-string b*))
           req* (-> req
                    (update :params merge body*)
                    (assoc :body body*))
